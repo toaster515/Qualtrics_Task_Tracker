@@ -1,0 +1,120 @@
+<script>
+	window.onload = function(){window.focus();}
+
+	function update_taskArray(task_tracker,updates){
+		var check_point;
+		try{
+			check_point = String(Qualtrics.SurveyEngine.getEmbeddedData('check_point'));
+		}catch{
+			check_point=null;
+		}
+		if (check_point===null){
+			check_point="Start";
+		}
+		if (! (check_point in task_tracker.check_points)){
+			task_tracker.check_points[check_point]=[]; 
+		}
+		updates['page']=task_tracker.page_check;
+		task_tracker.check_points[check_point].push(updates);
+		task_tracker.log.push(updates);
+		Qualtrics.SurveyEngine.setEmbeddedData('task_tracker',JSON.stringify(task_tracker));
+	}
+
+	Qualtrics.SurveyEngine.addOnload(function()
+	{
+
+		var task_tracker = JSON.parse(Qualtrics.SurveyEngine.getEmbeddedData('task_tracker'));
+		if (task_tracker===null){
+			console.log("Tracker Setup");
+			var n = Date.now();
+			var task_tracker = {
+				"start_time":n,
+				"offTask_check":n,
+				"onTask_check":n,
+				"check_points":{},
+				"page_check":1,
+				"log":[{"event":"start","time_check":n}]
+			};
+			Qualtrics.SurveyEngine.setEmbeddedData('task_tracker',JSON.stringify(task_tracker));
+		}
+		
+		window.onblur = function () {
+			//Left workspace
+			var task_tracker = JSON.parse(Qualtrics.SurveyEngine.getEmbeddedData('task_tracker'));
+			var start_time = task_tracker.start_time;
+			var time_check = Date.now();
+
+			task_tracker.offTask_check = time_check;
+			var last_check = task_tracker.onTask_check;
+			var duration = ((time_check - last_check) / 1000);
+			update_taskArray(task_tracker,
+							{
+								"event":"exit",
+								"time_check":time_check,
+								"last_check":last_check,
+								"duration":duration,
+								"duration_type":"on_task"
+							});
+			console.log("Left Workspace: \n"+String(time_check)+ "\nAfter "+String(duration)+" seconds on task");
+		};
+
+		window.onfocus = function() {
+			//Entered Workspace
+			var task_tracker = JSON.parse(Qualtrics.SurveyEngine.getEmbeddedData('task_tracker'));
+			var start_time = task_tracker.start_time;
+			var time_check = Date.now();
+
+			task_tracker.onTask_check = time_check;
+			var last_check = task_tracker.offTask_check;
+			var duration = ((time_check - last_check) / 1000);
+			update_taskArray(task_tracker,
+							{
+								"event":"enter",
+								"time_check":time_check,
+								"last_check":last_check,
+								"duration":duration,
+								"duration_type":"off_task"
+							});
+			console.log("Entered Workspace: \n"+String(time_check)+ "\nAfter "+String(duration)+" seconds off task");
+		};
+	});
+
+	Qualtrics.SurveyEngine.addOnPageSubmit(function() {
+		var ValidationCheck = document.getElementsByClassName('ValidationError');
+		var PassValidation = true;
+		for (var i=0; i < ValidationCheck.length; i++) {
+			if (ValidationCheck[i].style.display != 'none') {
+				PassValidation = false;
+				break;
+			};
+		};
+
+		var task_tracker = JSON.parse(Qualtrics.SurveyEngine.getEmbeddedData('task_tracker'));
+		var time_check = Date.now();
+
+		if (PassValidation) {
+			task_tracker.onTask_check = time_check;
+			var last_check = task_tracker.offTask_check;
+			var duration = ((time_check - last_check) / 1000);
+			update_taskArray(task_tracker,
+							{
+								"event":"next_page",
+								"time_check":time_check,
+								"last_check":last_check,
+								"duration":duration,
+								"duration_type":"on_task"
+							});
+			console.log("Finished Page: \n"+String(task_tracker.page_check)+ "\nAfter "+String(duration)+" seconds on task");
+			task_tracker.page_check += 1;
+			Qualtrics.SurveyEngine.setEmbeddedData('task_tracker',JSON.stringify(task_tracker));
+		} else {
+			task_tracker.log.push({
+				"event":"validation_error",
+				"time_check":time_check
+			});
+			console.log("Validation Error");
+		};
+	});
+
+</script>
+
