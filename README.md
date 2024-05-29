@@ -44,7 +44,7 @@ The checkpoints will be stored as keys, each containing their own array of track
 
 The JSON is stored as a string for each submission to the survey. So in order to use it for analysis, you just need to parse the JSON using a scripting language such as Python or R. 
 
-For instance, in Python, this would be as simple as:
+For instance, in **Python**, this would be as simple as:
 
 ```
 import json
@@ -78,7 +78,7 @@ print(list(example.keys()))
  'log']
 ```
 
-Or the same thing in R:
+Or the same thing in **R**:
 ```
 library(jsonlite)
 
@@ -130,7 +130,7 @@ print(example['log'][:3])
 
 You can see that the start is recorded, and each event get's a label, as well as the time stamp for when it occurred, the last time check, and the duration and duration type of the recorded event. This means that when the `event` is "exit", it is recording how long they were on task before exiting the browser window with the `duration` key. This is indicated for convenience by the `duration_type`, which can be used to sum the total on and off task events easily.
 
-Continuing the example, here is the total durations in Python:
+Continuing the example, here is the total durations in **Python**:
 ```
 #Sum all the durations, ignoring the first 'start' entry, if the duration_type is on or off
 total_on = sum([item['duration'] for item in example['log'][1:] if item['duration_type']=='on_task'])
@@ -140,7 +140,7 @@ total_off = sum([item['duration'] for item in example['log'][1:] if item['durati
 # total_on = 85.542
 ```
 
-And again in R:
+And again in **R**:
 ```
 on_task <- sum(example$log[which(example$log[,"duration_type"]=="on_task"),"duration"])
 off_task <- sum(example$log[which(example$log[,"duration_type"]=="off_task"),"duration"])
