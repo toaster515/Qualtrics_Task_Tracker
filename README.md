@@ -25,19 +25,19 @@ In Qualtrics
 - Navigate to the Look and feel section of your Qualtrics project
 - Under General, copy and paste the `header.html` file contents into the code section of the header.
 
-![[screenshot_1.png]]
+![[img/screenshot_1.png]]
 
 - Ensure there is an Embedded Data variable named `task_tracker` like the image below:
-![[screenshot_2.png]]
+![[img/screenshot_2.png]]
 
 And that's it! Everything will be stored as a string JSON variable within this singular variable to make things convenient.
 
 **Optionally**, you can also include checkpoints by adding a `check_point` Embedded Data variable, which will add separate updates to a `check_points` array stored within the `task_tracker` object.
-![[screenshot_3.png]]
+![[img/screenshot_3.png]]
 
 The checkpoints will be stored as keys, each containing their own array of tracking. Updates will be added continuously to whatever the active value within the `check_point` variable is. You can set the checkpoint via the Survey flow editor like the above image, or within a specific block by adjusting the Javascript like so:
 
-![[screenshot_4.png]]
+![[img/screenshot_4.png]]
 
 ---
 ### Functionality, Use and Interpretation
