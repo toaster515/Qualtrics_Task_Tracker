@@ -8,6 +8,21 @@
 		}catch{
 			check_point=null;
 		}
+		//// If you can only track certain pages, per colelction rules or just only want certain sections:
+		//// Uses the check_point to initiate and end collection
+		//// If the check_point is null or the string "END" then collection does not occur
+		
+		// if (check_point!==null && check_point!=="END"){
+		// 	if (! (check_point in task_tracker.check_points)){
+		// 		task_tracker.check_points[check_point]=[]; 
+		// 	}
+		// 	updates['page']=task_tracker.page_check;
+		// 	task_tracker.check_points[check_point].push(updates);
+		// 	task_tracker.log.push(updates);
+		// 	Qualtrics.SurveyEngine.setEmbeddedData('task_tracker',JSON.stringify(task_tracker));
+		// }
+
+		//If you want to collect everything from start to finish:
 		if (check_point===null){
 			check_point="Start";
 		}
