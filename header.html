@@ -12,7 +12,7 @@
 		//// Uses the check_point to initiate and end collection
 		//// If the check_point is null or the string "END" then collection does not occur
 		
-		// if (check_point!==null && check_point!=="END"){
+		// if (check_point!==null && String(check_point)!=="null" && check_point!=="END"){
 		// 	if (! (check_point in task_tracker.check_points)){
 		// 		task_tracker.check_points[check_point]=[]; 
 		// 	}
@@ -23,7 +23,7 @@
 		// }
 
 		//If you want to collect everything from start to finish:
-		if (check_point===null){
+		if (check_point===null || String(check_point)==="null"){
 			check_point="Start";
 		}
 		if (! (check_point in task_tracker.check_points)){
