@@ -32,6 +32,8 @@ In Qualtrics
 
 And that's it! Everything will be stored as a string JSON variable within this singular variable to make things convenient.
 
+---
+
 **Optionally**, you can also include checkpoints by adding a `check_point` Embedded Data variable, which will add separate updates to a `check_points` array stored within the `task_tracker` object.
 ![img3](https://github.com/toaster515/Qualtrics_Task_Tracker/blob/main/img/screenshot_3.png?raw=true)
 
