@@ -111,8 +111,8 @@
 			task_tracker.onTask_check = time_check;
 			var last_check = task_tracker.offTask_check;
 			var duration = ((time_check - last_check) / 1000);
-			//reset last_check to current time_check to avoid time rolling over into next checkpoint duration
-			last_check = time_check;
+			//reset offTask_check to current time_check to avoid time rolling over into next checkpoint duration
+			task_tracker.offTask_check = time_check;
 			
 			update_taskArray(task_tracker,
 							{
