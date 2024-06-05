@@ -84,7 +84,7 @@ Or the same thing in **R**:
 ```
 library(jsonlite)
 
-df <- read.csv('D:\\Julia\\Qualtrics_TaskTracking\\test_result.csv')
+df <- read.csv('C:\\path\\to\\test_result.csv')
 
 #drop Qualtrics jibberish header rows
 df <- df[3:nrow(df),]
