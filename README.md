@@ -41,6 +41,9 @@ The checkpoints will be stored as keys, each containing their own array of track
 
 ![img4](https://github.com/toaster515/Qualtrics_Task_Tracker/blob/main/img/screenshot_4.png?raw=true)
 
+
+**Note:** If you only want certain sections to be recorded, you can use the check points to control the start and end of the task tracking within the study flow. There is a slightly altered commented out section in the load function to do this. The logic is simple, when the `check_point` variable is not *null* it will begin tracking, and when it is set to `END`, it will stop tracking
+
 ---
 ### Functionality, Use and Interpretation
 
