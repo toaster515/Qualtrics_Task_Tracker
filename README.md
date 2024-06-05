@@ -201,6 +201,16 @@ Or in R:
 check_points <- example[['check_points']]
 check_point_on <- sum(check_points[['check_point_name']][which(check_point[['check_point_name']][,"duration_type"]=="on_task"),"duration"])
 check_point_off <- sum(check_points[['check_point_name']][which(check_point[['check_point_name']][,"duration_type"]=="off_task"),"duration"])
+
+
+check_points <- example[['check_points']]
+
+keys <-unlist(names(check_points))
+for (k in keys){
+  check_point_on <- sum(check_points[[k]][which(check_points[[k]][,"duration_type"]=="on_task"),"duration"])
+  check_point_off <- sum(check_points[[k]][which(check_points[[k]][,"duration_type"]=="off_task"),"duration"])
+  print(paste(k, check_point_on, check_point_off, sep=" "))
+}
 ```
 
 This example code is provided in the example folder
