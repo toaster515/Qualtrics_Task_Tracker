@@ -5,6 +5,7 @@ This project demonstrates how to integrate custom JavaScript with Qualtrics to m
 ## Key Features
 
 - **Browser Activity Tracking**: Monitors if a participant navigates away from or returns to the survey window.
+- **Mouse Activity Tracking**: Monitors the movement of a participant's mouse to track if it has left the browser window.
 - **Real-time Data Recording**: Logs entry and exit events as they occur.
 - **JSON Data Storage**: Collects and structures data in a JSON format for easy analysis.
 - **Qualtrics Integration**: Utilizes embedded variables to store the JSON object directly within Qualtrics.
@@ -12,7 +13,7 @@ This project demonstrates how to integrate custom JavaScript with Qualtrics to m
 ## How It Works
 
 - **JavaScript Integration**: The custom JavaScript code is added to the Qualtrics survey.
-- **Event Listeners**: The script sets up event listeners to detect when the survey window is active or inactive.
+- **Event Listeners**: The script sets up event listeners to detect when the survey window is active or inactive, or when the mouse cursor has left or entered the browser window.
 - **Data Logging**: Each event (entry/exit) is logged with a timestamp and other metadata information in a JSON object.
 - **Embedding Data**: The JSON object is saved in a convenient single embedded variable within Qualtrics which can then be used for further analysis.
 
