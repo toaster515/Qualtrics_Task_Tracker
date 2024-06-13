@@ -37,15 +37,20 @@
 
 	Qualtrics.SurveyEngine.addOnload(function()
 	{
-
+		//----------Setup----------
 		var task_tracker = JSON.parse(Qualtrics.SurveyEngine.getEmbeddedData('task_tracker'));
 		if (task_tracker===null){
 			console.log("Tracker Setup");
 			var n = Date.now();
 			var task_tracker = {
 				"start_time":n,
-				"offTask_check":n,
-				"onTask_check":n,
+				"vars":{
+					"offTask_check":n,
+					"onTask_check":n,
+					"mouse_in":true,
+					"inMouse_check":n,
+					"outMouse_check":n
+				},
 				"check_points":{},
 				"page_check":1,
 				"log":[{"event":"start","time_check":n}]
@@ -53,24 +58,25 @@
 			Qualtrics.SurveyEngine.setEmbeddedData('task_tracker',JSON.stringify(task_tracker));
 		}
 		
+		//----------Window Task Tracking----------
 		window.onblur = function () {
 			//Left workspace
 			var task_tracker = JSON.parse(Qualtrics.SurveyEngine.getEmbeddedData('task_tracker'));
 			var start_time = task_tracker.start_time;
 			var time_check = Date.now();
 
-			task_tracker.offTask_check = time_check;
-			var last_check = task_tracker.onTask_check;
+			task_tracker.vars.offTask_check = time_check;
+			var last_check = task_tracker.vars.onTask_check;
 			var duration = ((time_check - last_check) / 1000);
 			update_taskArray(task_tracker,
-							{
-								"event":"exit",
-								"time_check":time_check,
-								"last_check":last_check,
-								"duration":duration,
-								"duration_type":"on_task"
-							});
-			console.log("Left Workspace: \n"+String(time_check)+ "\nAfter "+String(duration)+" seconds on task");
+					{
+						"event":"exit",
+						"time_check":time_check,
+						"last_check":last_check,
+						"duration":duration,
+						"duration_type":"on_task"
+					});
+			//console.log("Left Workspace: \n"+String(time_check)+ "\nAfter "+String(duration)+" seconds on task");
 		};
 
 		window.onfocus = function() {
@@ -79,19 +85,65 @@
 			var start_time = task_tracker.start_time;
 			var time_check = Date.now();
 
-			task_tracker.onTask_check = time_check;
-			var last_check = task_tracker.offTask_check;
+			task_tracker.vars.onTask_check = time_check;
+			var last_check = task_tracker.vars.offTask_check;
 			var duration = ((time_check - last_check) / 1000);
 			update_taskArray(task_tracker,
-							{
-								"event":"enter",
-								"time_check":time_check,
-								"last_check":last_check,
-								"duration":duration,
-								"duration_type":"off_task"
-							});
-			console.log("Entered Workspace: \n"+String(time_check)+ "\nAfter "+String(duration)+" seconds off task");
+					{
+						"event":"enter",
+						"time_check":time_check,
+						"last_check":last_check,
+						"duration":duration,
+						"duration_type":"off_task"
+					});
+			//console.log("Entered Workspace: \n"+String(time_check)+ "\nAfter "+String(duration)+" seconds off task");
 		};
+		
+		//----------Mouse Movement Tracking----------
+		document.addEventListener("mouseleave", function(event){
+
+			if(event.clientY <= 0 || event.clientX <= 0 || (event.clientX >= window.innerWidth || event.clientY >= window.innerHeight))
+			{
+			//Mouse Left Workspace
+			var task_tracker = JSON.parse(Qualtrics.SurveyEngine.getEmbeddedData('task_tracker'));
+			var start_time = task_tracker.start_time;
+			var time_check = Date.now();
+
+			task_tracker.vars.outMouse_check = time_check;
+			var last_check = task_tracker.vars.inMouse_check;
+			var duration = ((time_check - last_check) / 1000);
+			update_taskArray(task_tracker,
+					{
+						"event":"mouse_out",
+						"time_check":time_check,
+						"last_check":last_check,
+						"duration":duration,
+						"duration_type":"on_task_mouse"
+					});
+			//console.log("Mouse Left Workspace: \n"+String(time_check)+ "\nAfter "+String(duration)+" seconds on task");
+			}
+		});
+		
+		document.onmouseenter = function(){
+			//Mouse Entered Workspace
+			var task_tracker = JSON.parse(Qualtrics.SurveyEngine.getEmbeddedData('task_tracker'));
+			var start_time = task_tracker.start_time;
+			var time_check = Date.now();
+
+			task_tracker.vars.inMouse_check = time_check;
+			var last_check = task_tracker.vars.outMouse_check;
+			var duration = ((time_check - last_check) / 1000);
+			update_taskArray(task_tracker,
+					{
+						"event":"mouse_in",
+						"time_check":time_check,
+						"last_check":last_check,
+						"duration":duration,
+						"duration_type":"off_task_mouse"
+					});
+			//console.log("Mouse Entered Workspace: \n"+String(time_check)+ "\nAfter "+String(duration)+" seconds out");
+		}
+
 	});
 
 	Qualtrics.SurveyEngine.addOnPageSubmit(function() {
@@ -108,20 +160,20 @@
 		var time_check = Date.now();
 
 		if (PassValidation) {
-			task_tracker.onTask_check = time_check;
-			var last_check = task_tracker.offTask_check;
-			var duration = ((time_check - last_check) / 1000);
-			//reset offTask_check to current time_check to avoid time rolling over into next checkpoint duration
-			task_tracker.offTask_check = time_check;
+			task_tracker.vars.onTask_check = time_check;
+			task_tracker.vars.inMouse_check = time_check;
+			task_tracker.vars.outMouse_check = time_check;
 			
+			var last_check = task_tracker.vars.offTask_check;
+			var duration = ((time_check - last_check) / 1000);
 			update_taskArray(task_tracker,
-							{
-								"event":"next_page",
-								"time_check":time_check,
-								"last_check":last_check,
-								"duration":duration,
-								"duration_type":"on_task"
-							});
+					{
+						"event":"next_page",
+						"time_check":time_check,
+						"last_check":last_check,
+						"duration":duration,
+						"duration_type":"on_task"
+					});
 			console.log("Finished Page: \n"+String(task_tracker.page_check)+ "\nAfter "+String(duration)+" seconds on task");
 			task_tracker.page_check += 1;
 			Qualtrics.SurveyEngine.setEmbeddedData('task_tracker',JSON.stringify(task_tracker));
