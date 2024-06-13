@@ -108,9 +108,13 @@ Each event gets placed in the `task_tracker`'s `log` with a label as follows:
 	- Browser window is activated
 - `exit`
 	- Browser window has been left
+- `mouse_in`
+	- Mouse has entered the browser window
+- `mouse_out`
+	- Mouse has left the browser window 
 - `next_page`
 	- Participant has successfully moved to the next page
-	- This will record an "on_task" event, and will update the last_check for the "off_task" to ensure the duration doesn't roll to the next page
+	- This will record an "on_task" event, and will update the last_check for the "off_task" within the `vars` to ensure the duration doesn't roll to the next page
 - `validation_error`
 	- In the event there is a validation error when the participant tries to go to the next page
 
